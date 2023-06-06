@@ -1,0 +1,28 @@
+services:
+  db:
+    image: arm64v8/mysql:8.0.28-oracle
+    container_name: db
+    restart: always
+    environment:
+       MYSQL_DATABASE: demodb
+       MYSQL_PASSWORD: root
+       MYSQL_USER: admin
+       MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+    volumes:
+      - ./../data:/var/lib/mysql
+  wordpress:
+    build: 
+      context: .
+      dockerfile: wordpress.dockerfile
+    container_name: wordpress
+    depends_on:
+      - db
+    ports:
+      - 80:80
+    environment:
+       WORDPRESS_DB_NAME: demodb
+       WORDPRESS_DB_USER: admin
+       WORDPRESS_DB_PASSWORD: root
+       WORDPRESS_DB_HOST: db   
